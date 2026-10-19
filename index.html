@@ -8,49 +8,66 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Timbang">
 <meta name="theme-color" content="#f3f6ff">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="apple-touch-icon.png">
 <title>Timbang</title>
 <style>
 :root{--bg:#f3f6ff;--card:#fff;--ink:#22294a;--mute:#6e7799;--line:#e2e8f8;--acc:#4a7dff;--accbg:#e6eeff;--pink:#ff6fa5;--warn:#c2306f;--warnbg:#ffe8f1;--bad:#c2306f;--badbg:#ffe0ec;--chip:#eef2fc}
 @media (prefers-color-scheme:dark){:root{--bg:#121629;--card:#1c2140;--ink:#eef1ff;--mute:#a4abcc;--line:#2c3358;--acc:#7ea2ff;--accbg:#22305e;--pink:#ff8fbb;--warn:#ff9cc4;--warnbg:#3d1f33;--bad:#ff9cc4;--badbg:#45203a;--chip:#252b4f}}
-.bar{height:12px;background:var(--chip);border-radius:999px;overflow:hidden;margin:8px 0 4px;position:relative}
-.bar>i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--acc),var(--pink))}
-.bar>b{position:absolute;top:0;bottom:0;width:2px;background:var(--ink);opacity:.35}
-.barrow{display:flex;justify-content:space-between;font-size:13px;color:var(--mute)}
-.em{font-size:22px;line-height:1}
-nav button:not(.on) .em{filter:grayscale(1);opacity:.55}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
 main{max-width:480px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 90px)}
-h1{font-size:13px;font-weight:600;color:var(--mute);margin:0 0 2px;text-transform:none}
+h1{font-size:13px;font-weight:600;color:var(--mute);margin:0 0 2px}
 .big{font-size:34px;font-weight:700;margin:0;letter-spacing:-.5px}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:12px 0}
 .lbl{font-size:12px;color:var(--mute);margin:0 0 4px}
 .val{font-size:24px;font-weight:700;margin:0}
 .sub{font-size:13px;color:var(--mute);margin:2px 0 0}
+.err{font-size:13px;color:var(--bad);margin:4px 0 0}
 .row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
 .row:first-of-type{border-top:0}
+.drow{padding:9px 0;border-top:1px solid var(--line)}
+.drow:first-of-type{border-top:0}
+.pills{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 .pill{font-size:12px;padding:3px 9px;border-radius:999px;background:var(--chip);color:var(--mute);white-space:nowrap}
-.pill.ok{background:var(--accbg);color:var(--acc)}.pill.warn{background:var(--warnbg);color:var(--warn)}.pill.bad{background:var(--badbg);color:var(--bad)}
+.pill.ok{background:var(--accbg);color:var(--acc)}.pill.bad{background:var(--badbg);color:var(--bad)}
 .note{border-radius:12px;padding:10px 12px;font-size:14px;margin:12px 0}
 .note.warn{background:var(--warnbg);color:var(--warn)}.note.bad{background:var(--badbg);color:var(--bad)}.note.ok{background:var(--accbg);color:var(--acc)}
 button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:11px 14px;cursor:pointer}
-button.pri{background:var(--acc);border-color:var(--acc);color:var(--card);font-weight:600}
+button:disabled{opacity:.45}
+button.pri{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
 button.sm{padding:6px 12px;font-size:13px}
 button.full{width:100%;margin-top:8px}
+button.x{border:0;background:none;color:var(--mute);padding:2px 6px;font-size:16px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}
 .chips button{padding:8px 13px;border-radius:999px;font-size:14px;background:var(--chip);border-color:transparent}
 .chips button.on{background:var(--accbg);color:var(--acc);border-color:var(--acc);font-weight:600}
-input{font:inherit;width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink)}
+input,textarea{font:inherit;width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink)}
+textarea{min-height:90px;resize:vertical}
 input[type=number]{font-size:28px;font-weight:700;text-align:center}
+input[type=date]{-webkit-appearance:none;appearance:none;display:block;min-width:0;max-width:100%;min-height:46px;text-align:left}
+input[type=date]::-webkit-date-and-time-value{text-align:left}
+.daynav{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:8px;align-items:center}
+.daynav button{padding:10px 0;font-size:18px}
+.cat{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}
+.catbtn{width:100%;text-align:left;display:flex;justify-content:space-between;align-items:center;background:var(--chip);border-color:transparent}
+.catbtn.on{background:var(--accbg);border-color:var(--acc);color:var(--acc);font-weight:600}
+.catbtn .sub{font-weight:400}
 .timer{font-size:56px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums;margin:6px 0}
+.bar{height:12px;background:var(--chip);border-radius:999px;overflow:hidden;margin:8px 0 4px;position:relative}
+.bar>i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--acc),var(--pink))}
+.bar>b{position:absolute;top:0;bottom:0;width:2px;background:var(--ink);opacity:.35}
+.barrow{display:flex;justify-content:space-between;font-size:13px;color:var(--mute)}
+.quote{font-size:16px;white-space:pre-wrap;margin:4px 0 0}
 nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 0 calc(env(safe-area-inset-bottom) + 8px)}
-nav button{border:0;background:none;color:var(--mute);font-size:12px;padding:4px 10px;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button{border:0;background:none;color:var(--mute);font-size:11px;padding:4px 6px;display:flex;flex-direction:column;align-items:center;gap:2px}
 nav button.on{color:var(--acc);font-weight:600}
-nav svg{width:22px;height:22px}
+.em{font-size:22px;line-height:1}
+nav button:not(.on) .em{filter:grayscale(1);opacity:.55}
 svg.chart{width:100%;height:auto;display:block}
 .hidden{display:none}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.grid2 .card{margin:0}
 </style>
 </head>
 <body>
@@ -58,24 +75,34 @@ svg.chart{width:100%;height:auto;display:block}
   <section id="v-home"></section>
   <section id="v-log" class="hidden"></section>
   <section id="v-crave" class="hidden"></section>
+  <section id="v-notes" class="hidden"></section>
   <section id="v-hist" class="hidden"></section>
 </main>
 <nav>
   <button data-v="home" class="on"><span class="em">🏠</span>Home</button>
   <button data-v="log"><span class="em">⚖️</span>Log</button>
   <button data-v="crave"><span class="em">🔥</span>Craving</button>
+  <button data-v="notes"><span class="em">📝</span>Notes</button>
   <button data-v="hist"><span class="em">📈</span>History</button>
 </nav>
 <script>
-const CFG={start:'2026-10-19',startW:65,target:63,goalDate:'2026-12-03',beach:'2026-12-04',beachEnd:'2026-12-05',warnFrom:'2026-11-29',maintCeil:64,waitMin:30,minWeighins:4};
-const FOODS=['Unli wings','Unli KBBQ','Samgyupsal','Other'];
-const REASONS=['Date night','Ate breakfast','Stress','Payday','Friends','Other'];
-const EM={'Unli wings':'🍗','Unli KBBQ':'🥩','Samgyupsal':'🥓','Date night':'💕','Ate breakfast':'🍳','Stress':'😩','Payday':'💸','Friends':'👯','Other':'🤷'};
-const bar=(p,mk)=>`<div class="bar"><i style="width:${Math.round(Math.min(1,Math.max(0,p))*100)}%"></i>${mk!=null?`<b style="left:${mk*100}%"></b>`:''}</div>`;
+const CFG={startW:65,target:63,maintCeil:64,waitMin:30,minWeighins:4,warnBefore:5};
+const DEF_GOAL={emoji:'🎯',name:'Beach trip',date:'2026-12-04',start:'2026-10-19',startW:65};
+const BASE_FOODS=[{n:'Unli wings',e:'🍗',u:1},{n:'Samgyupsal',e:'🥓',u:1},{n:'Japanese',e:'🍣'},{n:'Chinese',e:'🥟'},{n:'Indian',e:'🍛'}];
+const REASONS=[['Date night','💕'],['Hungry','🤤'],['Stress','😩'],['Depression','🌧️'],['Period','🩸'],['Payday','💸'],['Friends','👯'],['Other','🤷']];
+const REM=Object.fromEntries(REASONS);REM['Ate breakfast']='🍳';
+const CATS=[['meal','🍚','Meal','Rice meal, pasta'],['snack','🍪','Snack',''],['bev','🧋','Beverage','']];
+const SIZES=[['light','Light'],['normal','Normal'],['heavy','Heavy']];
 const KEY='timbang-v1';
-let S=load(),view='home',logDate=null,draft={},crave={food:null,reason:null};
+let S=load(),view='home',logDate=null,draft={},crave={food:null,reason:null},editFoods=false,editingGoal=false,goalNew=false;
 
-function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.log)return s}catch(e){}return{log:{},tokens:[],cravings:[],timer:null,reward:{unlocked:null,used:null}}}
+function migrate(s){
+  s.goal=s.goal||Object.assign({},DEF_GOAL);s.customFoods=s.customFoods||[];s.notes=s.notes||[];
+  s.tokens=s.tokens||[];s.cravings=s.cravings||[];s.reward=s.reward||{unlocked:null,used:null};s.log=s.log||{};
+  Object.values(s.log).forEach(e=>{if(e.meals!==undefined){if(e.meals==='unli')e.unli=true;e.food=e.food||{};e.food.meal={n:e.meals==='2'?2:1,size:e.size||'normal'};delete e.meals;delete e.size}});
+  return s;
+}
+function load(){let s=null;try{s=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!s||!s.log)s={log:{}};return migrate(s)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){alert('Could not save. Storage may be full or blocked.')}}
 
 const pad=n=>String(n).padStart(2,'0');
@@ -86,168 +113,245 @@ const addDays=(s,n)=>{const d=parse(s);d.setDate(d.getDate()+n);return iso(d)};
 const diffDays=(a,b)=>Math.round((parse(b)-parse(a))/864e5);
 const f2=n=>(Math.round(n*100)/100).toFixed(2);
 const nice=s=>parse(s).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+const nextFirst=()=>{const d=parse(today());return nice(iso(new Date(d.getFullYear(),d.getMonth()+1,1)))};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const $=id=>document.getElementById(id);
+const bar=(p,mk)=>`<div class="bar"><i style="width:${Math.round(Math.min(1,Math.max(0,p))*100)}%"></i>${mk!=null?`<b style="left:${mk*100}%"></b>`:''}</div>`;
 
+const G=()=>S.goal;
+const inWarn=d=>d>=addDays(G().date,-CFG.warnBefore)&&d<=addDays(G().date,1);
+const maintMode=d=>d>G().date||G().startW<=CFG.target;
 function avg7(end){let sum=0,n=0;for(let i=0;i<7;i++){const e=S.log[addDays(end,-i)];if(e&&e.w){sum+=e.w;n++}}return{avg:n?sum/n:null,n}}
-function planAt(d){const t=Math.min(1,Math.max(0,diffDays(CFG.start,d)/diffDays(CFG.start,CFG.goalDate)));return CFG.startW+(CFG.target-CFG.startW)*t}
-const inWarn=d=>d>=CFG.warnFrom&&d<=CFG.beachEnd;
-const maint=d=>d>CFG.beachEnd;
+function planAt(d){const g=G();if(g.startW<=CFG.target)return null;const span=Math.max(1,diffDays(g.start,addDays(g.date,-1)));const t=Math.min(1,Math.max(0,diffDays(g.start,d)/span));return g.startW+(CFG.target-g.startW)*t}
+
+const allFoods=()=>BASE_FOODS.concat(S.customFoods.map(n=>({n,e:'✨',c:1})));
+const foodOf=n=>allFoods().find(f=>f.n===n)||{n,e:'🍽️'};
+const lockedFood=n=>{const mk=today().slice(0,7);return S.cravings.some(c=>c.outcome==='used'&&c.food===n&&c.date.slice(0,7)===mk)};
 
 function tokenState(d){
   const mk=d.slice(0,7),used=S.tokens.filter(t=>t.date.slice(0,7)===mk),has=t=>used.some(x=>x.type===t),day=+d.slice(8);
-  return{
-    monthsary:has('monthsary')?'used':(day<=7?'available':'expired'),
-    flex:has('flex')?'used':'available',
-    reward:S.reward.used?'used':(S.reward.unlocked?'available':'locked')
-  };
+  return{monthsary:has('monthsary')?'used':(day<=7?'available':'expired'),flex:has('flex')?'used':'available',reward:S.reward.used?'used':(S.reward.unlocked?'available':'locked')};
 }
 function checkReward(){
   if(S.reward.unlocked)return;
   const a=avg7(today());
   if(a.n>=CFG.minWeighins&&Math.round(a.avg*100)/100<CFG.target){S.reward.unlocked=today();save()}
 }
-function spend(type,food,reason){
-  const d=today();
-  if(inWarn(d)&&!confirm('Beach window (Nov 29 to Dec 5). An unli meal can add 1 to 2 kg of water weight for a few days. Use it anyway?'))return false;
-  S.tokens.push({date:d,type,food:food||'',reason:reason||''});
-  if(type==='reward')S.reward.used=d;
-  S.log[d]=Object.assign({},S.log[d],{meals:'unli'});
-  save();return true;
-}
+const warnOk=()=>!inWarn(today())||confirm(G().name+' is close. A big meal can add 1 to 2 kg of water weight for a few days. Go ahead?');
+function markUnli(){const d=today();S.log[d]=Object.assign({},S.log[d],{unli:true})}
 
 function chart(){
-  const pre=!maint(today()),end=pre?CFG.beachEnd:today(),start=pre?addDays(CFG.start,-7):addDays(end,-29),N=diffDays(start,end)+1,days=[];for(let i=0;i<N;i++)days.push(addDays(start,i));
-  const pts=[],av=[];days.forEach((d,i)=>{const e=S.log[d];if(e&&e.w)pts.push([i,e.w]);const a=avg7(d);if(a.n)av.push([i,a.avg])});
-  const vals=pts.concat(av).map(p=>p[1]).concat([CFG.target,planAt(start),planAt(end)]);
+  const t=today(),g=G();
+  let start=addDays(g.start,-7);if(diffDays(start,t)>29)start=addDays(t,-29);
+  const end=t>=g.date?t:g.date,N=Math.max(2,diffDays(start,end)+1),days=[];for(let i=0;i<N;i++)days.push(addDays(start,i));
+  const pts=[],av=[],pl=[];
+  days.forEach((d,i)=>{const e=S.log[d];if(e&&e.w)pts.push([i,e.w]);if(d<=t){const a=avg7(d);if(a.n)av.push([i,a.avg])}const p=planAt(d);if(p!=null&&d>=g.start)pl.push([i,p])});
+  const vals=pts.concat(av,pl).map(p=>p[1]).concat([CFG.target]);
   const lo=Math.floor(Math.min(...vals)-.3),hi=Math.ceil(Math.max(...vals)+.3);
-  const W=320,H=150,x=i=>10+i*(W-20)/(N-1),y=w=>10+(hi-w)/(hi-lo)*(H-34),ti=diffDays(start,today());
+  const W=320,H=150,x=i=>10+i*(W-20)/(N-1),y=w=>10+(hi-w)/(hi-lo)*(H-34),ti=diffDays(start,t);
   const line=a=>a.map((p,k)=>(k?'L':'M')+x(p[0]).toFixed(1)+' '+y(p[1]).toFixed(1)).join(' ');
-  let g='';for(let w=lo;w<=hi;w++)g+=`<line x1="10" x2="${W-10}" y1="${y(w)}" y2="${y(w)}" stroke="var(--line)"/><text x="${W-10}" y="${y(w)-3}" text-anchor="end" font-size="10" fill="var(--mute)">${w}</text>`;
-  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Weight trend, last 30 days">${g}
+  let gr='';for(let w=lo;w<=hi;w++)gr+=`<line x1="10" x2="${W-10}" y1="${y(w)}" y2="${y(w)}" stroke="var(--line)"/><text x="${W-10}" y="${y(w)-3}" text-anchor="end" font-size="10" fill="var(--mute)">${w}</text>`;
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Weight trend">${gr}
   <line x1="10" x2="${W-10}" y1="${y(CFG.target)}" y2="${y(CFG.target)}" stroke="var(--pink)" stroke-dasharray="2 4"/>
-  <path d="M${x(0)} ${y(planAt(start))} L${x(diffDays(start,CFG.start))} ${y(planAt(CFG.start))} L${x(diffDays(start,CFG.goalDate))} ${y(CFG.target)} L${x(N-1)} ${y(planAt(end))}" stroke="var(--mute)" stroke-dasharray="5 4" fill="none"/>
-  ${pre&&ti>=0&&ti<N?`<line x1="${x(ti)}" x2="${x(ti)}" y1="6" y2="${H-24}" stroke="var(--line)" stroke-width="2"/>`:''}
+  ${pl.length>1?`<path d="${line(pl)}" stroke="var(--mute)" stroke-dasharray="5 4" fill="none"/>`:''}
+  ${ti<N-1?`<line x1="${x(ti)}" x2="${x(ti)}" y1="6" y2="${H-24}" stroke="var(--line)" stroke-width="2"/>`:''}
   ${pts.map(p=>`<circle cx="${x(p[0])}" cy="${y(p[1])}" r="2.8" fill="var(--pink)" opacity=".75"/>`).join('')}
   ${av.length>1?`<path d="${line(av)}" stroke="var(--acc)" stroke-width="2.5" fill="none"/>`:''}
-  <text x="10" y="${H-6}" font-size="10" fill="var(--mute)">${nice(start)}</text><text x="${W-10}" y="${H-6}" font-size="10" fill="var(--mute)" text-anchor="end">${pre?'Beach':'Today'}</text></svg>
-  <p class="sub">Line: 7-day average · Dots: daily · Dashed: plan · Dotted: 63.00</p>`;
+  <text x="10" y="${H-6}" font-size="10" fill="var(--mute)">${nice(start)}</text><text x="${W-10}" y="${H-6}" font-size="10" fill="var(--mute)" text-anchor="end">${t>=g.date?'Today':esc(g.emoji)+' '+nice(g.date)}</text></svg>
+  <p class="sub">Line: 7-day average · Dots: daily · Dashed: plan · Dotted: ${f2(CFG.target)}</p>`;
+}
+
+function goalEditor(){
+  const g=goalNew?{emoji:'🎯',name:'',date:addDays(today(),30)}:G();
+  return `<div class="card"><p class="lbl">${goalNew?'🎯 New goal':'✏️ Edit goal'}</p>
+  <div style="display:grid;grid-template-columns:72px minmax(0,1fr);gap:8px"><input id="ge" value="${esc(g.emoji)}" maxlength="8" style="text-align:center;font-size:24px;padding:8px" aria-label="Emoji"><input id="gn" value="${esc(g.name)}" placeholder="Beach trip"></div>
+  <p class="lbl" style="margin-top:10px">Date</p><input id="gd" type="date" value="${g.date}">
+  <p class="sub">Tap the emoji box and use the emoji keyboard to pick your own.</p><p id="gerr" class="err"></p>
+  <div class="grid2" style="margin-top:8px"><button onclick="editingGoal=false;render()">Cancel</button><button class="pri" onclick="saveGoal()">Save</button></div></div>`;
+}
+function editGoal(n){editingGoal=true;goalNew=!!n;render()}
+function saveGoal(){
+  const em=$('ge').value.trim()||'🎯',nm=$('gn').value.trim(),dt=$('gd').value;
+  if(!nm||!dt){$('gerr').textContent='Add a name and a date.';return}
+  if(goalNew){const a=avg7(today());S.goal={emoji:em,name:nm,date:dt,start:today(),startW:a.n?Math.round(a.avg*100)/100:CFG.startW}}
+  else Object.assign(S.goal,{emoji:em,name:nm,date:dt});
+  save();editingGoal=false;render();
 }
 
 function renderHome(){
   checkReward();
-  const d=today(),a=avg7(d),ts=tokenState(d),e=S.log[d];
+  const d=today(),a=avg7(d),ts=tokenState(d),e=S.log[d],g=G(),mm=maintMode(d);
   let h='';
-  if(!maint(d)){const left=diffDays(d,CFG.beach),tot=diffDays(CFG.start,CFG.beach);h+=`<h1>🏖️ Beach in</h1><p class="big">${left>0?left+' days':(left===0?'Today':'Now')}</p>${bar(1-left/tot)}<div class="barrow"><span>Oct 19</span><span>Dec 4 🌊</span></div>`}
-  else h+=`<h1>🌸 Maintenance mode</h1><p class="big">Stay under ${f2(CFG.maintCeil)}</p>`;
+  if(editingGoal)h+=goalEditor();
+  else if(d<=g.date){
+    const left=diffDays(d,g.date),tot=Math.max(1,diffDays(g.start,g.date));
+    h+=`<div class="hd"><h1>${esc(g.emoji)} ${esc(g.name)} in</h1><button class="sm" onclick="editGoal()">✏️ Edit</button></div>
+    <p class="big">${left>0?left+(left===1?' day':' days'):'Today 🎉'}</p>${bar(1-left/tot)}<div class="barrow"><span>${nice(g.start)}</span><span>${nice(g.date)}</span></div>`;
+  }else h+=`<div class="card"><p class="val">🎉 ${esc(g.name)} is done</p><p class="sub">Set your next goal to keep the countdown going.</p><button class="pri full" onclick="editGoal(true)">Set next goal</button></div>`;
   if(!e||!e.w)h+=`<div class="note warn">⚖️ Not weighed in today. <button class="sm" onclick="go('log')">Log now</button></div>`;
-  if(e&&e.meals==='2')h+=`<div class="note warn">🍳 Breakfast logged. Keep dinner light.</div>`;
-  if(maint(d)&&a.n&&a.avg>=CFG.maintCeil)h+=`<div class="note bad">⚠️ 7-day average is ${f2(a.avg)} kg, at or above ${f2(CFG.maintCeil)}. Skip the flex token this month.</div>`;
-  if(!maint(d)){
+  if(mm&&a.n&&a.avg>=CFG.maintCeil)h+=`<div class="note bad">⚠️ 7-day average is ${f2(a.avg)} kg, at or above ${f2(CFG.maintCeil)}. Skip the flex token this month.</div>`;
+  h+=`<div class="card">`;
+  if(!S.reward.used){
     const togo=a.n?a.avg-CFG.target+0.01:null,pct=a.n?(CFG.startW-a.avg)/(CFG.startW-CFG.target+0.01):0;
-    h+=`<div class="card"><p class="lbl">🍖 Road to Sumo Nikko</p>
-    ${S.reward.unlocked?`<p class="val">Unlocked 🎉</p>${bar(1)}`:`<p class="val">${a.n?(togo>0?f2(togo)+' kg to go':'Almost 🎉'):'–'}</p>${bar(pct)}<div class="barrow"><span>${f2(CFG.startW)}</span><span>below ${f2(CFG.target)}</span></div>`}
-    <p class="lbl" style="margin-top:12px">⚖️ Weigh-ins this week · ${a.n} of 7 (need ${CFG.minWeighins})</p>${bar(a.n/7,CFG.minWeighins/7)}</div>`;
+    h+=`<p class="lbl">🍖 Road to Sumo Nikko</p>${S.reward.unlocked?`<p class="val">Unlocked 🎉</p>${bar(1)}`:`<p class="val">${a.n?(togo>0?f2(togo)+' kg to go':'Almost 🎉'):'–'}</p>${bar(pct)}<div class="barrow"><span>${f2(CFG.startW)}</span><span>below ${f2(CFG.target)}</span></div>`}<div style="height:12px"></div>`;
   }
+  h+=`<p class="lbl">⚖️ Weigh-ins this week · ${a.n} of 7 (need ${CFG.minWeighins})</p>${bar(a.n/7,CFG.minWeighins/7)}</div>`;
   h+=`<div class="card"><p class="lbl">📊 7-day average</p>`;
   if(a.n){
-    const p=planAt(d),diff=a.avg-p;
     h+=`<p class="val">${f2(a.avg)} kg</p>`;
-    if(!maint(d)){
-      const wk=Math.max(diffDays(d,CFG.goalDate),1)/7,need=(a.avg-CFG.target)/wk;
-      h+=`<p class="sub">${Math.abs(diff)<.05?'On plan':(diff>0?f2(diff)+' above plan':f2(-diff)+' below plan')} · ${need>0?'need '+f2(need)+' kg/week to reach 63.00':'below 63.00'}</p>`;
-    }
+    if(!mm){
+      const p=planAt(d),diff=a.avg-p,wk=Math.max(diffDays(d,g.date),1)/7,need=(a.avg-CFG.target)/wk;
+      h+=`<p class="sub">${Math.abs(diff)<.05?'On plan':(diff>0?f2(diff)+' above plan':f2(-diff)+' below plan')} · ${need>0?'need '+f2(need)+' kg/week to reach '+f2(CFG.target):'below '+f2(CFG.target)}</p>`;
+    }else h+=`<p class="sub">Maintenance · stay under ${f2(CFG.maintCeil)}</p>`;
   }else h+=`<p class="val">–</p><p class="sub">Log your weight to start.</p>`;
   h+=chart()+`</div>`;
   const pl={available:'<span class="pill ok">Available</span>',used:'<span class="pill">Used</span>',expired:'<span class="pill">Expired</span>',locked:'<span class="pill">Locked</span>'};
   h+=`<div class="card"><p class="lbl">🎟️ Unli tokens · ${parse(d).toLocaleDateString('en-US',{month:'long'})}</p>
-  <div class="row"><div>💕 Monthsary<div class="sub">Days 1 to 7, no wait</div></div><div>${ts.monthsary==='available'?'<button class="sm pri" onclick="useDirect(\'monthsary\')">Use</button>':pl[ts.monthsary]}</div></div>
+  <div class="row"><div>💕 Monthsary<div class="sub">Days 1 to 7, no wait</div></div><div>${ts.monthsary==='available'?'<button class="sm pri" onclick="goCrave(\'Date night\')">Use</button>':pl[ts.monthsary]}</div></div>
   <div class="row"><div>🎟️ Flex<div class="sub">Needs a ${CFG.waitMin}-min craving wait</div></div><div>${ts.flex==='available'?'<button class="sm" onclick="go(\'crave\')">Craving</button>':pl.used}</div></div>
-  <div class="row"><div>🍖 Sumo Nikko<div class="sub">Bonus · 7-day avg below 63.00, ${CFG.minWeighins}+ weigh-ins</div></div><div>${ts.reward==='available'?'<button class="sm pri" onclick="useDirect(\'reward\')">Use</button>':pl[ts.reward]}</div></div></div>`;
-  if(S.reward.unlocked&&!S.reward.used&&!maint(d)&&d<CFG.warnFrom)h+=`<div class="note ok">🎉 Sumo Nikko unlocked. Best before Nov 29 so the water weight clears before the beach.</div>`;
+  <div class="row"><div>🍖 Sumo Nikko<div class="sub">Bonus · 7-day avg below ${f2(CFG.target)}, ${CFG.minWeighins}+ weigh-ins</div></div><div>${ts.reward==='available'?'<button class="sm pri" onclick="useReward()">Use</button>':pl[ts.reward]}</div></div></div>`;
+  if(S.reward.unlocked&&!S.reward.used&&d<addDays(g.date,-CFG.warnBefore))h+=`<div class="note ok">🎉 Sumo Nikko unlocked. Best at least ${CFG.warnBefore} days before ${esc(g.name)} so the water weight clears.</div>`;
   $('v-home').innerHTML=h;
 }
-function useDirect(type){
-  const name={monthsary:'monthsary',reward:'Sumo Nikko'}[type];
-  if(!confirm('Use your '+name+' token today?'))return;
-  if(spend(type,type==='reward'?'Sumo Nikko':'',type==='monthsary'?'Date night':'Reward'))render();
+function useReward(){
+  if(!confirm('Use your Sumo Nikko reward today?')||!warnOk())return;
+  S.tokens.push({date:today(),type:'reward',food:'Sumo Nikko',reason:'Reward'});S.reward.used=today();markUnli();save();render();
 }
 
 function renderLog(){
   if(!logDate)logDate=today();
   const e=S.log[logDate]||{};
-  if(draft.date!==logDate)draft={date:logDate,w:e.w||'',meals:e.meals||null,size:e.size||null};
-  const ch=(k,opts,labels)=>`<div class="chips">${opts.map((o,i)=>`<button class="${draft[k]===o?'on':''}" onclick="setD('${k}','${o}')">${labels[i]}</button>`).join('')}</div>`;
+  if(draft.date!==logDate)draft={date:logDate,w:e.w!=null?e.w:'',food:JSON.parse(JSON.stringify(e.food||{})),unli:!!e.unli};
+  const sizeChips=k=>`<div class="chips">${SIZES.map(([s,l])=>`<button class="${draft.food[k].size===s?'on':''}" onclick="setSize('${k}','${s}')">${l}</button>`).join('')}</div>`;
+  let cats='';
+  CATS.forEach(([k,em,l,hint])=>{
+    const on=!!draft.food[k];
+    cats+=`<div class="cat"><button class="catbtn ${on?'on':''}" onclick="togCat('${k}')"><span>${em} ${l}${hint?` <span class="sub">· ${hint}</span>`:''}</span><span>${on?'✓':'+'}</span></button>`;
+    if(on){
+      if(k==='meal')cats+=`<p class="lbl" style="margin-top:8px">How many</p><div class="chips">${[1,2,3].map(n=>`<button class="${draft.food.meal.n===n?'on':''}" onclick="setN(${n})">${n===3?'3+':n}</button>`).join('')}</div>`;
+      cats+=`<p class="lbl"${k==='meal'?'':' style="margin-top:8px"'}>Size</p>${sizeChips(k)}`;
+    }
+    cats+=`</div>`;
+  });
   $('v-log').innerHTML=`<h1>⚖️ Daily log</h1><p class="big">${logDate===today()?'Today':nice(logDate)}</p>
-  <div class="card"><p class="lbl">📅 Date</p><input type="date" value="${logDate}" max="${today()}" onchange="logDate=this.value||today();renderLog()"></div>
-  <div class="card"><p class="lbl">⚖️ Weight (kg)</p><input id="w" type="number" inputmode="decimal" step="0.01" placeholder="64.80" value="${draft.w}" oninput="draft.w=this.value">
-  <p class="lbl" style="margin-top:14px">🍽️ Meals</p>${ch('meals',['1','2','unli'],['🍽️ 1 meal','🍳 2 meals','🔥 Unli'])}
-  <p class="lbl">🥄 Main meal size</p>${ch('size',['light','normal','heavy'],['🥗 Light','🍛 Normal','🍖 Heavy'])}
-  ${draft.meals==='2'?'<div class="note warn" style="margin:0 0 4px">🍳 Breakfast day. Keep dinner light.</div>':''}
-  <button class="pri full" onclick="saveLog()">Save 💾</button></div>`;
+  <div class="card"><div class="daynav"><button onclick="shiftDay(-1)" aria-label="Previous day">‹</button><input type="date" value="${logDate}" max="${today()}" onchange="logDate=(this.value&&this.value<=today())?this.value:today();renderLog()"><button onclick="shiftDay(1)" aria-label="Next day" ${logDate>=today()?'disabled':''}>›</button></div></div>
+  <div class="card"><p class="lbl">⚖️ Weight (kg)</p><input id="w" type="number" inputmode="decimal" step="0.01" placeholder="64.80" value="${draft.w}" oninput="draft.w=this.value"><p id="werr" class="err"></p>
+  <p class="lbl" style="margin-top:10px">🍽️ What you ate (tap all that apply)</p>${cats}
+  <div class="cat"><button class="catbtn ${draft.unli?'on':''}" onclick="togUnli()"><span>🔥 Unli</span><span>${draft.unli?'✓':'+'}</span></button></div>
+  <button class="pri full" style="margin-top:14px" onclick="saveLog()">Save 💾</button></div>`;
 }
-function setD(k,v){draft.w=$('w').value;draft[k]=draft[k]===v?null:v;renderLog()}
+const keepW=()=>{if($('w'))draft.w=$('w').value};
+function togCat(k){keepW();if(draft.food[k])delete draft.food[k];else draft.food[k]=k==='meal'?{n:1,size:'normal'}:{size:'normal'};renderLog()}
+function setN(n){keepW();draft.food.meal.n=n;renderLog()}
+function setSize(k,s){keepW();draft.food[k].size=s;renderLog()}
+function togUnli(){keepW();draft.unli=!draft.unli;renderLog()}
+function shiftDay(n){const d=addDays(logDate,n);if(d>today())return;logDate=d;renderLog()}
 function saveLog(){
-  const w=parseFloat($('w').value);
-  if($('w').value&&(isNaN(w)||w<30||w>200)){alert('Enter a weight in kg, like 64.80.');return}
-  const e={};if(!isNaN(w))e.w=Math.round(w*100)/100;if(draft.meals)e.meals=draft.meals;if(draft.size)e.size=draft.size;
+  const raw=$('w').value,w=parseFloat(raw);
+  if(raw&&(isNaN(w)||w<30||w>200)){$('werr').textContent='Enter a weight in kg, like 64.80.';return}
+  const e={};if(raw)e.w=Math.round(w*100)/100;if(Object.keys(draft.food).length)e.food=draft.food;if(draft.unli)e.unli=true;
   if(Object.keys(e).length)S.log[logDate]=e;else delete S.log[logDate];
-  save();draft={};logDate=null;go('home');
+  const back=logDate===today()?'home':'hist';save();draft={};logDate=null;go(back);
 }
 
 let tick=null;
+function goCrave(reason){crave.reason=reason||null;go('crave')}
 function renderCrave(){
-  const t=S.timer,ts=tokenState(today());
+  const t=S.timer,ts=tokenState(today()),d=today();
   let h=`<h1>🔥 Craving check</h1>`;
   if(!t){
+    const sel=crave.food?foodOf(crave.food):null;
+    const foods=allFoods().map((f,i)=>{const lk=lockedFood(f.n);
+      return `<span style="display:inline-flex;align-items:center"><button class="${crave.food===f.n?'on':''}" ${lk?'disabled':''} onclick="pickFood(${i})">${lk?'🔒':f.e} ${esc(f.n)}</button>${editFoods&&f.c?`<button class="x" aria-label="Remove" onclick="removeFood(${i-BASE_FOODS.length})">✕</button>`:''}</span>`}).join('');
     h+=`<p class="big">Wait ${CFG.waitMin} min ⏳</p><p class="sub">Pick what you want and why. Decide after the timer.</p>
-    <div class="card"><p class="lbl">What do you want?</p><div class="chips">${FOODS.map(f=>`<button class="${crave.food===f?'on':''}" onclick="crave.food='${f}';renderCrave()">${EM[f]||'🍽️'} ${f}</button>`).join('')}</div>
-    <p class="lbl">Why now?</p><div class="chips">${REASONS.map(r=>`<button class="${crave.reason===r?'on':''}" onclick="crave.reason='${r}';renderCrave()">${EM[r]} ${r}</button>`).join('')}</div>
-    ${crave.reason==='Date night'&&ts.monthsary==='available'?'<div class="note ok" style="margin:0 0 8px">💕 If this is your monthsary, use the monthsary token on Home instead. No wait.</div>':''}
-    ${crave.reason==='Ate breakfast'?'<div class="note warn" style="margin:0 0 8px">🍳 Hunger after breakfast usually passes. Have a light dinner.</div>':''}
-    <p class="sub">🎟️ Flex token this month: ${ts.flex==='available'?'1 left':'used'}</p>
-    <button class="pri full" onclick="startWait()">Start ${CFG.waitMin}-min wait ⏳</button></div>`;
+    <div class="card"><div class="hd"><p class="lbl">What do you want?</p>${S.customFoods.length?`<button class="sm" onclick="editFoods=!editFoods;renderCrave()">${editFoods?'Done':'Edit list'}</button>`:''}</div>
+    <div class="chips">${foods}</div>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px"><input id="cf" placeholder="Chocolate, chicken parmigiana"><button onclick="addFood()">Add</button></div>
+    <p class="sub" style="margin-top:6px">🔒 Each food unlocks once a month. Locked ones open again on ${nextFirst()}.</p>
+    <p class="lbl" style="margin-top:14px">Why now?</p><div class="chips">${REASONS.map(([r,em])=>`<button class="${crave.reason===r?'on':''}" onclick="crave.reason='${r}';renderCrave()">${em} ${r}</button>`).join('')}</div>
+    ${crave.reason==='Hungry'?'<div class="note warn" style="margin:0 0 8px">🤤 Real hunger? Eat a normal meal first, then see if the craving is still there.</div>':''}
+    ${crave.reason==='Period'?'<div class="note warn" style="margin:0 0 8px">🩸 Cravings and 1 to 2 kg of water weight are common around your period. The 7-day average smooths it out.</div>':''}
+    ${sel?(sel.u?`<p class="sub">🎟️ Unli needs your flex token: ${ts.flex==='available'?'1 left':'used this month'}</p>`:`<p class="sub">🔒 Having ${esc(sel.n)} locks it until ${nextFirst()}.</p>`):''}
+    <p id="cerr" class="err"></p>
+    ${crave.reason==='Date night'&&ts.monthsary==='available'?`<button class="pri full" onclick="useMonthsary()">💕 Use monthsary token (no wait)</button><button class="full" onclick="startWait()">Start ${CFG.waitMin}-min wait ⏳</button>`:`<button class="pri full" onclick="startWait()">Start ${CFG.waitMin}-min wait ⏳</button>`}</div>`;
   }else{
-    const left=Math.max(0,t.start+CFG.waitMin*60000-Date.now()),done=left===0,m=Math.floor(left/60000),s=Math.floor(left/1000)%60;
-    h+=`<p class="sub">${EM[t.food]||'🍽️'} ${t.food||'Craving'}${t.reason?' · '+(EM[t.reason]||'')+' '+t.reason:''}</p>
+    const f=foodOf(t.food),left=Math.max(0,t.start+CFG.waitMin*60000-Date.now()),done=left===0,m=Math.floor(left/60000),s=Math.floor(left/1000)%60;
+    h+=`<p class="sub">${f.e} ${esc(t.food)}${t.reason?' · '+(REM[t.reason]||'')+' '+t.reason:''}</p>
     <div class="card"><div class="timer">${pad(m)}:${pad(s)}</div>${bar(1-left/(CFG.waitMin*60000))}
     <p class="sub" style="text-align:center">${done?'⏰ Time is up. Decide now.':'Close the app if you want. The timer keeps running.'}</p>
-    ${done?(ts.flex==='available'?'<button class="pri full" onclick="endCrave(true)">Use flex token</button>':'<div class="note bad">No flex token left this month.</div>'):''}
+    ${done?(f.u?(ts.flex==='available'?'<button class="pri full" onclick="endCrave(true)">Use flex token 🎟️</button>':'<div class="note bad">No flex token left this month.</div>'):(lockedFood(t.food)?'<div class="note bad">Already had this month.</div>':`<button class="pri full" onclick="endCrave(true)">Have it (locks until ${nextFirst()})</button>`)):''}
     <button class="full" onclick="endCrave(false)">${done?'Pass 💪':'Pass now 💪'}</button></div>`;
+    if(S.notes.length){const n=S.notes[t.start%S.notes.length];h+=`<div class="card"><p class="lbl">📝 Your note</p><p class="quote">${esc(n.text)}</p></div>`}
   }
-  const c=S.cravings.filter(x=>x.date.slice(0,7)===today().slice(0,7));
-  const np=c.filter(x=>x.outcome==='passed').length,nu=c.filter(x=>x.outcome==='used').length;
-  h+=`<div class="card"><p class="lbl">📆 This month</p><div class="grid2"><div><p class="val">💪 ${np}</p><p class="sub">Passed</p></div><div><p class="val">🍗 ${nu}</p><p class="sub">Gave in</p></div></div>${np+nu?`${bar(np/(np+nu))}<div class="barrow"><span>Pass rate</span><span>${Math.round(np/(np+nu)*100)}%</span></div>`:''}</div>`;
+  const c=S.cravings.filter(x=>x.date.slice(0,7)===d.slice(0,7)),np=c.filter(x=>x.outcome==='passed').length,nu=c.filter(x=>x.outcome==='used').length;
+  h+=`<div class="card"><p class="lbl">📆 This month</p><div class="grid2"><div><p class="val">💪 ${np}</p><p class="sub">Passed</p></div><div><p class="val">🍽️ ${nu}</p><p class="sub">Gave in</p></div></div>${np+nu?`${bar(np/(np+nu))}<div class="barrow"><span>Pass rate</span><span>${Math.round(np/(np+nu)*100)}%</span></div>`:''}</div>`;
   $('v-crave').innerHTML=h;
   clearInterval(tick);if(t&&view==='crave')tick=setInterval(()=>{if(view==='crave')renderCrave();else clearInterval(tick)},1000);
 }
-function startWait(){S.timer={start:Date.now(),food:crave.food,reason:crave.reason};crave={food:null,reason:null};save();renderCrave()}
+function pickFood(i){const f=allFoods()[i];crave.food=crave.food===f.n?null:f.n;renderCrave()}
+function addFood(){
+  const v=$('cf').value.trim();
+  if(!v){$('cerr').textContent='Type a food first.';return}
+  const ex=allFoods().find(f=>f.n.toLowerCase()===v.toLowerCase());
+  if(!ex){S.customFoods.push(v);save()}
+  const name=ex?ex.n:v;if(!lockedFood(name))crave.food=name;renderCrave();
+}
+function removeFood(i){if(!confirm('Remove '+S.customFoods[i]+' from the list?'))return;if(crave.food===S.customFoods[i])crave.food=null;S.customFoods.splice(i,1);save();renderCrave()}
+function needFood(){if(!crave.food){$('cerr').textContent='Pick a food first.';return false}return true}
+function startWait(){if(!needFood())return;S.timer={start:Date.now(),food:crave.food,reason:crave.reason};crave={food:null,reason:null};save();renderCrave()}
+function useMonthsary(){
+  if(!needFood()||!warnOk())return;
+  const f=foodOf(crave.food),d=today();
+  S.tokens.push({date:d,type:'monthsary',food:f.n,reason:'Date night'});
+  S.cravings.push({date:d,food:f.n,reason:'Date night',outcome:'used'});
+  if(f.u)markUnli();crave={food:null,reason:null};save();go('home');
+}
 function endCrave(use){
-  const t=S.timer;
-  if(use&&!spend('flex',t.food,t.reason))return;
-  S.cravings.push({date:today(),food:t.food||'',reason:t.reason||'',outcome:use?'used':'passed'});
+  const t=S.timer,f=foodOf(t.food);
+  if(use){if(!warnOk())return;if(f.u){S.tokens.push({date:today(),type:'flex',food:f.n,reason:t.reason||''});markUnli()}}
+  S.cravings.push({date:today(),food:t.food,reason:t.reason||'',outcome:use?'used':'passed'});
   S.timer=null;save();clearInterval(tick);renderCrave();
 }
 
+function renderNotes(){
+  $('v-notes').innerHTML=`<h1>📝 Notes</h1><p class="big">Keep going</p>
+  <div class="card"><p class="lbl">Reasons to keep going, and reminders not to overdo it</p><textarea id="nt" placeholder="I want to feel good in my swimsuit, not just thinner."></textarea><p id="nerr" class="err"></p><button class="pri full" onclick="addNote()">Save note</button>
+  <p class="sub" style="margin-top:8px">One of these shows up during the craving wait.</p></div>
+  ${S.notes.length?`<div class="card">${S.notes.slice().reverse().map((n,k)=>{const i=S.notes.length-1-k;return`<div class="drow"><div class="hd" style="align-items:flex-start"><p class="quote" style="margin:0">${esc(n.text)}</p><button class="x" aria-label="Delete" onclick="delNote(${i})">✕</button></div><p class="sub">${nice(n.date)}</p></div>`}).join('')}</div>`:''}`;
+}
+function addNote(){const v=$('nt').value.trim();if(!v){$('nerr').textContent='Write something first.';return}S.notes.push({text:v,date:today()});save();renderNotes()}
+function delNote(i){if(!confirm('Delete this note?'))return;S.notes.splice(i,1);save();renderNotes()}
+
+function foodPills(e){
+  const p=[],f=e.food||{},sz=s=>s.charAt(0).toUpperCase()+s.slice(1);
+  if(f.meal)p.push(`<span class="pill">🍚${f.meal.n>1?' ×'+(f.meal.n===3?'3+':f.meal.n):''} ${sz(f.meal.size)}</span>`);
+  if(f.snack)p.push(`<span class="pill">🍪 ${sz(f.snack.size)}</span>`);
+  if(f.bev)p.push(`<span class="pill">🧋 ${sz(f.bev.size)}</span>`);
+  if(e.unli)p.push(`<span class="pill bad">🔥 Unli</span>`);
+  return p.join('');
+}
 function renderHist(){
   const days=Object.keys(S.log).sort().reverse();
   const cnt={};S.cravings.forEach(c=>{if(c.reason)cnt[c.reason]=(cnt[c.reason]||0)+1});
-  const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1]);
-  const tl={monthsary:'💕 Monthsary',flex:'🎟️ Flex',reward:'🍖 Sumo Nikko'},mx=top.length?top[0][1]:1;
+  const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1]),mx=top.length?top[0][1]:1;
+  const tl={monthsary:'💕 Monthsary',flex:'🎟️ Flex',reward:'🍖 Sumo Nikko'};
   $('v-hist').innerHTML=`<h1>📈 History</h1><p class="big">${days.length} days logged</p>
-  <div class="card"><p class="lbl">🧠 Craving reasons (all time)</p>${top.length?top.map(([r,n])=>`<div style="margin-top:8px"><div class="barrow" style="color:var(--ink);font-size:14px"><span>${EM[r]||''} ${r}</span><span>${n}</span></div>${bar(n/mx)}</div>`).join(''):'<p class="sub">No cravings logged yet.</p>'}</div>
-  <div class="card"><p class="lbl">🎟️ Tokens used</p>${S.tokens.length?S.tokens.slice().reverse().map(t=>`<div class="row"><span>${nice(t.date)} · ${tl[t.type]}</span><span class="sub">${t.food||t.reason||''}</span></div>`).join(''):'<p class="sub">None yet.</p>'}</div>
-  <div class="card"><p class="lbl">📋 Daily log</p>${days.length?days.map(d=>{const e=S.log[d];return`<div class="row" onclick="logDate='${d}';go('log')"><span>${nice(d)}</span><span>${e.w?f2(e.w)+' kg':'–'} <span class="pill ${e.meals==='unli'?'bad':(e.meals==='2'?'warn':'')}">${e.meals==='unli'?'Unli':(e.meals?e.meals+' meal'+(e.meals==='2'?'s':''):'–')}${e.size?' · '+e.size:''}</span></span></div>`}).join(''):'<p class="sub">Nothing logged yet.</p>'}</div>
+  <button class="full" onclick="logDate=addDays(today(),-1);go('log')">➕ Log a past day</button>
+  <div class="card"><p class="lbl">🧠 Craving reasons (all time)</p>${top.length?top.map(([r,n])=>`<div style="margin-top:8px"><div class="barrow" style="color:var(--ink);font-size:14px"><span>${REM[r]||''} ${esc(r)}</span><span>${n}</span></div>${bar(n/mx)}</div>`).join(''):'<p class="sub">No cravings logged yet.</p>'}</div>
+  <div class="card"><p class="lbl">🎟️ Tokens used</p>${S.tokens.length?S.tokens.slice().reverse().map(t=>`<div class="row"><span>${nice(t.date)} · ${tl[t.type]}</span><span class="sub">${esc(t.food||t.reason||'')}</span></div>`).join(''):'<p class="sub">None yet.</p>'}</div>
+  <div class="card"><p class="lbl">📋 Daily log · tap a day to edit</p>${days.length?days.map(d=>{const e=S.log[d];return`<div class="drow" onclick="logDate='${d}';go('log')"><div class="hd"><span>${nice(d)}</span><span>${e.w?f2(e.w)+' kg':'–'}</span></div><div class="pills">${foodPills(e)}</div></div>`}).join(''):'<p class="sub">Nothing logged yet.</p>'}</div>
   <div class="card"><p class="lbl">💾 Backup</p><p class="sub">Data lives on this phone only. Export now and then.</p>
   <div class="grid2" style="margin-top:8px"><button onclick="exportData()">Export</button><button onclick="$('imp').click()">Import</button></div>
   <input id="imp" type="file" accept="application/json" class="hidden" onchange="importData(this.files[0])"></div>`;
 }
 function exportData(){const b=new Blob([JSON.stringify(S)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='timbang-backup-'+today()+'.json';a.click()}
-function importData(f){if(!f)return;const r=new FileReader();r.onload=()=>{try{const s=JSON.parse(r.result);if(!s.log)throw 0;if(confirm('Replace all current data with this backup?')){S=s;save();render()}}catch(e){alert('That file is not a Timbang backup.')}};r.readAsText(f)}
+function importData(f){if(!f)return;const r=new FileReader();r.onload=()=>{try{const s=JSON.parse(r.result);if(!s.log)throw 0;if(confirm('Replace all current data with this backup?')){S=migrate(s);save();render()}}catch(e){alert('That file is not a Timbang backup.')}};r.readAsText(f)}
 
-function go(v){view=v;document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));['home','log','crave','hist'].forEach(k=>$('v-'+k).classList.toggle('hidden',k!==v));render();window.scrollTo(0,0)}
-function render(){({home:renderHome,log:renderLog,crave:renderCrave,hist:renderHist})[view]()}
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.v));
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)render()});
+const VIEWS=['home','log','crave','notes','hist'];
+function go(v){view=v;document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));VIEWS.forEach(k=>$('v-'+k).classList.toggle('hidden',k!==v));render();window.scrollTo(0,0)}
+function render(){({home:renderHome,log:renderLog,crave:renderCrave,notes:renderNotes,hist:renderHist})[view]()}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{if(b.dataset.v==='log')logDate=null;go(b.dataset.v)});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&view!=='log'&&view!=='notes')render()});
 render();
 </script>
 </body>
