@@ -43,7 +43,7 @@ button.x{border:0;background:none;color:var(--mute);padding:2px 6px;font-size:16
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 12px}
 .chips button{padding:8px 13px;border-radius:999px;font-size:14px;background:var(--chip);border-color:transparent}
 .chips button.on{background:var(--accbg);color:var(--acc);border-color:var(--acc);font-weight:600}
-input,textarea{font:inherit;width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink)}
+input,textarea{font:inherit;font-size:16px;width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink)}
 textarea{min-height:90px;resize:vertical}
 input[type=number]{font-size:28px;font-weight:700;text-align:center}
 input[type=date]{-webkit-appearance:none;appearance:none;display:block;min-width:0;max-width:100%;min-height:46px;text-align:left}
@@ -94,7 +94,7 @@ const REM=Object.fromEntries(REASONS);REM['Ate breakfast']='🍳';
 const CATS=[['meal','🍚','Meal','Rice meal, pasta'],['snack','🍪','Snack',''],['bev','🧋','Beverage','']];
 const SIZES=[['light','Light'],['normal','Normal'],['heavy','Heavy']];
 const KEY='timbang-v1';
-let S=load(),view='home',logDate=null,draft={},crave={food:null,reason:null},editFoods=false,editingGoal=false,goalNew=false;
+let savedMsg=false,S=load(),view='home',logDate=null,draft={},crave={food:null,reason:null},editFoods=false,editingGoal=false,goalNew=false;
 
 function migrate(s){
   s.goal=s.goal||Object.assign({},DEF_GOAL);s.customFoods=s.customFoods||[];s.notes=s.notes||[];
@@ -234,6 +234,7 @@ function renderLog(){
     cats+=`</div>`;
   });
   $('v-log').innerHTML=`<h1>⚖️ Daily log</h1><p class="big">${logDate===today()?'Today':nice(logDate)}</p>
+  ${(m=>{savedMsg=false;return m})(savedMsg)?`<div class="note ok">✅ Saved ${logDate===today()?'today':nice(logDate)}.</div>`:''}
   <div class="card"><div class="daynav"><button onclick="shiftDay(-1)" aria-label="Previous day">‹</button><input type="date" value="${logDate}" max="${today()}" onchange="logDate=(this.value&&this.value<=today())?this.value:today();renderLog()"><button onclick="shiftDay(1)" aria-label="Next day" ${logDate>=today()?'disabled':''}>›</button></div></div>
   <div class="card"><p class="lbl">⚖️ Weight (kg)</p><input id="w" type="number" inputmode="decimal" step="0.01" placeholder="64.80" value="${draft.w}" oninput="draft.w=this.value"><p id="werr" class="err"></p>
   <p class="lbl" style="margin-top:10px">🍽️ What you ate (tap all that apply)</p>${cats}
@@ -251,20 +252,19 @@ function saveLog(){
   if(raw&&(isNaN(w)||w<30||w>200)){$('werr').textContent='Enter a weight in kg, like 64.80.';return}
   const e={};if(raw)e.w=Math.round(w*100)/100;if(Object.keys(draft.food).length)e.food=draft.food;if(draft.unli)e.unli=true;
   if(Object.keys(e).length)S.log[logDate]=e;else delete S.log[logDate];
-  const back=logDate===today()?'home':'hist';save();draft={};logDate=null;go(back);
+  save();draft={};savedMsg=true;renderLog();window.scrollTo(0,0);
 }
 
 let tick=null;
 function goCrave(reason){crave.reason=reason||null;go('crave')}
 function renderCrave(){
   const t=S.timer,ts=tokenState(today()),d=today();
-  let h=`<h1>🔥 Craving check</h1>`;
+  let h=`<p class="big">Craving something?</p>`;
   if(!t){
     const sel=crave.food?foodOf(crave.food):null;
     const foods=allFoods().map((f,i)=>{const lk=lockedFood(f.n);
       return `<span style="display:inline-flex;align-items:center"><button class="${crave.food===f.n?'on':''}" ${lk?'disabled':''} onclick="pickFood(${i})">${lk?'🔒':f.e} ${esc(f.n)}</button>${editFoods&&f.c?`<button class="x" aria-label="Remove" onclick="removeFood(${i-BASE_FOODS.length})">✕</button>`:''}</span>`}).join('');
-    h+=`<p class="big">Wait ${CFG.waitMin} min ⏳</p><p class="sub">Pick what you want and why. Decide after the timer.</p>
-    <div class="card"><div class="hd"><p class="lbl">What do you want?</p>${S.customFoods.length?`<button class="sm" onclick="editFoods=!editFoods;renderCrave()">${editFoods?'Done':'Edit list'}</button>`:''}</div>
+    h+=`<div class="card"><div class="hd"><p class="lbl">What do you want?</p>${S.customFoods.length?`<button class="sm" onclick="editFoods=!editFoods;renderCrave()">${editFoods?'Done':'Edit list'}</button>`:''}</div>
     <div class="chips">${foods}</div>
     <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px"><input id="cf" placeholder="Chocolate, chicken parmigiana"><button onclick="addFood()">Add</button></div>
     <p class="sub" style="margin-top:6px">🔒 Each food unlocks once a month. Locked ones open again on ${nextFirst()}.</p>
@@ -276,8 +276,7 @@ function renderCrave(){
     ${crave.reason==='Date night'&&ts.monthsary==='available'?`<button class="pri full" onclick="useMonthsary()">💕 Use monthsary token (no wait)</button><button class="full" onclick="startWait()">Start ${CFG.waitMin}-min wait ⏳</button>`:`<button class="pri full" onclick="startWait()">Start ${CFG.waitMin}-min wait ⏳</button>`}</div>`;
   }else{
     const f=foodOf(t.food),left=Math.max(0,t.start+CFG.waitMin*60000-Date.now()),done=left===0,m=Math.floor(left/60000),s=Math.floor(left/1000)%60;
-    h+=`<p class="sub">${f.e} ${esc(t.food)}${t.reason?' · '+(REM[t.reason]||'')+' '+t.reason:''}</p>
-    <div class="card"><div class="timer">${pad(m)}:${pad(s)}</div>${bar(1-left/(CFG.waitMin*60000))}
+    h+=`<div class="card"><p class="lbl" style="text-align:center">${f.e} ${esc(t.food)}${t.reason?' · '+(REM[t.reason]||'')+' '+t.reason:''}</p><div class="timer">${pad(m)}:${pad(s)}</div>${bar(1-left/(CFG.waitMin*60000))}
     <p class="sub" style="text-align:center">${done?'⏰ Time is up. Decide now.':'Close the app if you want. The timer keeps running.'}</p>
     ${done?(f.u?(ts.flex==='available'?'<button class="pri full" onclick="endCrave(true)">Use flex token 🎟️</button>':'<div class="note bad">No flex token left this month.</div>'):(lockedFood(t.food)?'<div class="note bad">Already had this month.</div>':`<button class="pri full" onclick="endCrave(true)">Have it (locks until ${nextFirst()})</button>`)):''}
     <button class="full" onclick="endCrave(false)">${done?'Pass 💪':'Pass now 💪'}</button></div>`;
@@ -314,7 +313,7 @@ function endCrave(use){
 }
 
 function renderNotes(){
-  $('v-notes').innerHTML=`<h1>📝 Notes</h1><p class="big">Keep going</p>
+  $('v-notes').innerHTML=`<p class="big">Keep going!!</p>
   <div class="card"><p class="lbl">Reasons to keep going, and reminders not to overdo it</p><textarea id="nt" placeholder="I want to feel good in my swimsuit, not just thinner."></textarea><p id="nerr" class="err"></p><button class="pri full" onclick="addNote()">Save note</button>
   <p class="sub" style="margin-top:8px">One of these shows up during the craving wait.</p></div>
   ${S.notes.length?`<div class="card">${S.notes.slice().reverse().map((n,k)=>{const i=S.notes.length-1-k;return`<div class="drow"><div class="hd" style="align-items:flex-start"><p class="quote" style="margin:0">${esc(n.text)}</p><button class="x" aria-label="Delete" onclick="delNote(${i})">✕</button></div><p class="sub">${nice(n.date)}</p></div>`}).join('')}</div>`:''}`;
